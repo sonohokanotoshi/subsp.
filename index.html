@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>亜種 subsp.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&family=Noto+Sans+JP:wght@400&family=Noto+Sans+SC:wght@400&family=Noto+Serif+JP:wght@900&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --h: min(46vh, 52vw);          /* pill height drives everything */
+    --w: calc(var(--h) * 1.375);   /* pill width */
+    --pad: clamp(16px, 3vw, 40px);
+    --ink: #000;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #fff;
+    color: var(--ink);
+    overflow: hidden;
+    font-family: "Inter", "Noto Sans JP", "Noto Sans SC", sans-serif;
+  }
+
+  .corner {
+    position: fixed;
+    font-size: clamp(14px, 1.5vw, 22px);
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+  .tl { top: var(--pad); left: var(--pad); }
+  .tr { top: var(--pad); right: var(--pad); }
+  .bl { bottom: var(--pad); left: var(--pad); }
+  .br { bottom: var(--pad); right: var(--pad); font-family: "Noto Sans SC", sans-serif; }
+  .tl { font-family: "Noto Sans JP", sans-serif; }
+
+  main {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .pill {
+    position: relative;
+    width: var(--w);
+    height: var(--h);
+    border: 1.5px solid var(--ink);
+    border-radius: 9999px;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transform: translateY(calc(var(--h) * 0.06));
+    transition: transform .4s ease;
+  }
+  .pill:focus-visible { outline: 2px dashed var(--ink); outline-offset: 8px; }
+
+  .title {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    font-family: "Noto Serif JP", serif;
+    font-weight: 900;
+    font-size: calc(var(--h) * 0.2);
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .sub {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--h) * 0.155);
+    transform: translate(-50%, -50%);
+    font-family: "Noto Serif", serif;
+    font-weight: 700;
+    font-size: calc(var(--h) * 0.105);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .visual {
+    position: absolute;
+    left: 50%;
+    top: 47%;
+    width: calc(var(--h) * 0.66);
+    transform: translate(-48%, -50%);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    user-select: none;
+    transition: transform .3s ease;
+  }
+  .pill.playing .visual { animation: wobble 1.6s ease-in-out infinite; }
+  @keyframes wobble {
+    0%, 100% { transform: translate(-48%, -50%) rotate(0deg); }
+    50%      { transform: translate(-48%, -52%) rotate(-1.5deg); }
+  }
+</style>
+</head>
+<body>
+  <div class="corner tl" lang="ja">その他の都市</div>
+  <div class="corner tr">other cities</div>
+  <div class="corner bl" lang="es">otras ciudades</div>
+  <div class="corner br" lang="zh">其他城市</div>
+
+  <main>
+    <button class="pill" id="pill" aria-label="Play music" aria-pressed="false">
+      <span class="title" lang="ja">亜種</span>
+      <span class="sub">subsp.</span>
+      <img class="visual" src="public/main-visual.png" alt="" draggable="false">
+    </button>
+  </main>
+
+  <audio id="audio" src="public/olvidala%20x%20magnet.mp3" preload="auto" loop></audio>
+
+<script>
+  const pill = document.getElementById('pill');
+  const audio = document.getElementById('audio');
+  pill.addEventListener('click', () => {
+    if (audio.paused) audio.play().catch(() => {});
+    else audio.pause();
+  });
+  const sync = () => {
+    const on = !audio.paused;
+    pill.classList.toggle('playing', on);
+    pill.setAttribute('aria-pressed', on);
+    pill.setAttribute('aria-label', on ? 'Pause music' : 'Play music');
+  };
+  audio.addEventListener('play', sync);
+  audio.addEventListener('pause', sync);
+</script>
+</body>
+</html>
